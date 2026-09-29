@@ -1,0 +1,46 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Clase {
+  id              Int       @id @default(autoincrement())
+  nombre          String
+  descripcion     String
+  duracionMinutos Int
+  horarios        Horario[]
+}
+
+model Horario {
+  id           Int           @id @default(autoincrement())
+  claseId      Int
+  diaSemana    String
+  horaInicio   String
+  cupoMaximo   Int
+  clase        Clase         @relation(fields: [claseId], references: [id])
+  inscripciones Inscripcion[]
+}
+
+model Miembro {
+  id           Int           @id @default(autoincrement())
+  nombre       String
+  correo       String        @unique
+  membresia    String
+  inscripciones Inscripcion[]
+}
+
+model Inscripcion {
+  id        Int      @id @default(autoincrement())
+  miembroId Int
+  horarioId Int
+  fecha     DateTime @default(now())
+  miembro   Miembro  @relation(fields: [miembroId], references: [id])
+  horario   Horario  @relation(fields: [horarioId], references: [id])
+
+  @@unique([miembroId, horarioId])
+}
