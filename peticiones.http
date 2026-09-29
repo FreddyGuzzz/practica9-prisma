@@ -1,0 +1,195 @@
+@base = http://localhost:3000
+
+### CLASES
+POST {{base}}/clases
+Content-Type: application/json
+
+{
+  "nombre": "Yoga",
+  "descripcion": "Clase suave para empezar el dia",
+  "duracionMinutos": 60
+}
+
+###
+GET {{base}}/clases
+
+###
+GET {{base}}/clases/1
+
+###
+PUT {{base}}/clases/1
+Content-Type: application/json
+
+{
+  "nombre": "Yoga avanzado",
+  "descripcion": "Para los que ya llevan tiempo",
+  "duracionMinutos": 75
+}
+
+###
+GET {{base}}/clases/999
+
+### HORARIOS
+POST {{base}}/horarios
+Content-Type: application/json
+
+{
+  "claseId": 1,
+  "diaSemana": "lunes",
+  "horaInicio": "07:00",
+  "cupoMaximo": 1
+}
+
+###
+GET {{base}}/horarios
+
+###
+GET {{base}}/horarios/1
+
+###
+PUT {{base}}/horarios/1
+Content-Type: application/json
+
+{
+  "claseId": 1,
+  "diaSemana": "martes",
+  "horaInicio": "08:00",
+  "cupoMaximo": 1
+}
+
+### MIEMBROS
+POST {{base}}/miembros
+Content-Type: application/json
+
+{
+  "nombre": "Ana Lopez",
+  "correo": "ana@correo.com",
+  "membresia": "basica"
+}
+
+###
+POST {{base}}/miembros
+Content-Type: application/json
+
+{
+  "nombre": "Luis Perez",
+  "correo": "luis@correo.com",
+  "membresia": "vip"
+}
+
+###
+GET {{base}}/miembros
+
+###
+GET {{base}}/miembros/1
+
+###
+PUT {{base}}/miembros/1
+Content-Type: application/json
+
+{
+  "nombre": "Ana Lopez Ruiz",
+  "correo": "ana@correo.com",
+  "membresia": "premium"
+}
+
+### INSCRIPCIONES
+POST {{base}}/inscripciones
+Content-Type: application/json
+
+{
+  "miembroId": 1,
+  "horarioId": 1
+}
+
+### 409 inscripcion duplicada
+POST {{base}}/inscripciones
+Content-Type: application/json
+
+{
+  "miembroId": 1,
+  "horarioId": 1
+}
+
+### 409 cupo lleno (el horario 1 tiene cupo de 1)
+POST {{base}}/inscripciones
+Content-Type: application/json
+
+{
+  "miembroId": 2,
+  "horarioId": 1
+}
+
+### 404 horario que no existe
+POST {{base}}/inscripciones
+Content-Type: application/json
+
+{
+  "miembroId": 1,
+  "horarioId": 999
+}
+
+### 404 miembro que no existe
+POST {{base}}/inscripciones
+Content-Type: application/json
+
+{
+  "miembroId": 999,
+  "horarioId": 1
+}
+
+###
+GET {{base}}/inscripciones
+
+###
+GET {{base}}/inscripciones/1
+
+###
+DELETE {{base}}/inscripciones/1
+
+### VALIDACION (paso 4)
+
+### 400 tipo equivocado
+POST {{base}}/clases
+Content-Type: application/json
+
+{
+  "nombre": "Spinning",
+  "descripcion": "Bici",
+  "duracionMinutos": "sesenta"
+}
+
+### 400 campo que no existe en el DTO
+POST {{base}}/clases
+Content-Type: application/json
+
+{
+  "nombre": "Spinning",
+  "descripcion": "Bici",
+  "duracionMinutos": 45,
+  "color": "rojo"
+}
+
+### 400 correo y membresia invalidos
+POST {{base}}/miembros
+Content-Type: application/json
+
+{
+  "nombre": "Pedro",
+  "correo": "esto-no-es-correo",
+  "membresia": "oro"
+}
+
+### CORS (paso 6)
+
+### origen permitido
+GET {{base}}/clases
+Origin: http://localhost:5173
+
+### otro origen permitido
+GET {{base}}/clases
+Origin: http://localhost:4200
+
+### origen que no esta en la lista
+GET {{base}}/clases
+Origin: http://sitio-malo.com
